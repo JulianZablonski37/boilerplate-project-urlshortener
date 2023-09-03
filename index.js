@@ -67,7 +67,6 @@ app.post('/api/shorturl', async (req, res) => {
   console.log(req.body)
   var origUrls  = req.body.url;
   if (origUrls==='')origUrls = "https://www.freecodecamp.org/";
-  const urlId = nanoid();
   if (isValidUrl(origUrls)) {
     try {
       let url = await Url.findOne({ origUrl:origUrls });
@@ -80,10 +79,10 @@ app.post('/api/shorturl', async (req, res) => {
         const shortUrl = await Url.collection.count()+1 ;
 
         url = new Url({
-          origUrls,
-          shortUrl,
+          'origUrl':origUrls,
+          'shortUrl':shortUrl,
         });
-
+        
         await url.save();
         res.json({
           'orginal_url':origUrls,
