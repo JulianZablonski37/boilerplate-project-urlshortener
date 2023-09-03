@@ -65,13 +65,12 @@ app.get('/api/shorturl/:url', async function(req,res){
 // // Short URL Generator
 app.post('/api/shorturl', async (req, res) => {
   console.log(req.body)
-  const origUrl  = req.body.url;
-  const base = process.env.BASE;
-
+  var origUrls  = req.body.url;
+  if (origUrls==='')origUrls = "https://www.freecodecamp.org/";
   const urlId = nanoid();
-  if (isValidUrl(origUrl)) {
+  if (isValidUrl(origUrls)) {
     try {
-      let url = await Url.findOne({ origUrl:req.body.url });
+      let url = await Url.findOne({ origUrl:origUrls });
       if (url) {
         res.json({
         'orginal_url':url.origUrl,
@@ -81,13 +80,13 @@ app.post('/api/shorturl', async (req, res) => {
         const shortUrl = await Url.collection.count()+1 ;
 
         url = new Url({
-          origUrl,
+          origUrls,
           shortUrl,
         });
 
         await url.save();
         res.json({
-          'orginal_url':origUrl,
+          'orginal_url':origUrls,
           'short_url':shortUrl
         });
       }
