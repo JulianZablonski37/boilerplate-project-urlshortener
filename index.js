@@ -44,11 +44,11 @@ return !!urlPattern.test(urlString);
 app.get('/api/shorturl/:url', async function(req,res){
     console.log(req.params.url)
     try{
-      let url = await Url.findOne({ shortUrl:Number(req.params.url) });
-      if (isValidUrl(url.origUrl)){
-        console.log(url.origUrl)
+      let url = await Url.findOne({ short_url:Number(req.params.url) });
+      if (isValidUrl(url.original_url)){
+        console.log(url.original_url)
         res.writeHead(302, {
-          'Location': url.origUrl
+          'Location': url.original_url
         });
         res.end();
       }
@@ -64,29 +64,29 @@ app.get('/api/shorturl/:url', async function(req,res){
 
 // // Short URL Generator
 app.post('/api/shorturl', async (req, res) => {
-  console.log(req.body)
   var origUrls  = req.body.url;
   if (origUrls==='')origUrls = "https://www.freecodecamp.org/";
   if (isValidUrl(origUrls)) {
     try {
-      let url = await Url.findOne({ origUrl:origUrls });
+      let url = await Url.findOne({ original_url:origUrls });
       if (url) {
+        
         res.json({
-        'orginal_url':url.origUrl,
-        'short_url':url.shortUrl
+          'original_url':url.original_url,
+          'short_url':url.short_url
       });
       } else {
-        const shortUrl = await Url.collection.count()+1 ;
+        const shortUrl = await Url.collection.count();
 
         url = new Url({
-          'origUrl':origUrls,
-          'shortUrl':shortUrl,
+          'original_url':origUrls,
+          'short_url':Number(shortUrl)+1
         });
         
         await url.save();
         res.json({
-          'orginal_url':origUrls,
-          'short_url':shortUrl
+          'original_url':origUrls,
+          'short_url':Number(shortUrl)+1
         });
       }
     } catch (err) {

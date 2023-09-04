@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
 
 const UrlSchema = new mongoose.Schema({
-  origUrl: {
+  original_url : {
     type: String,
     required: true,
   },
-  shortUrl: {
+  short_url : {
     type: Number,
     required: true,
   },
